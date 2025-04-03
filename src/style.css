@@ -1,0 +1,92 @@
+:root {
+  --color-primary: #faf9f6;
+  --color-secondary: #319bc9;
+  --color-accent: #de8657;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "helvetica neue", sans-serif;
+}
+body {
+  background-color: var(--color-primary);
+  color: black;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+#photo_container {
+  column-count: 4;
+  column-gap: 12px;
+  margin-left: 2%;
+  padding: 1rem;
+  list-style: none;
+}
+
+#photo_container li {
+  break-inside: avoid;
+  margin-bottom: 12px;
+  transform: translateY(20px);
+  animation: fadeIn 0.4s ease forwards;
+}
+
+#photo_container img {
+  width: 90%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 15px;
+  transition: transform 0.3s ease;
+  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.291);
+  display: block;
+}
+
+#photo_container li {
+  break-inside: avoid;
+  margin-bottom: 12px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 1s ease forwards;
+}
+
+#photo_container li:nth-child(even) {
+  animation-delay: 0.5s;
+}
+
+#photo_container li:nth-child(odd) {
+  animation-delay: 0.5s;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#photo_container img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 1024px) {
+  #photo_container {
+    column-count: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  #photo_container {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  #photo_container {
+    margin-left: 5%;
+    column-count: 1;
+  }
+}
