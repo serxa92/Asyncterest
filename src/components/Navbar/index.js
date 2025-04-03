@@ -23,7 +23,7 @@ export function Navbar() {
 
 /* Cargar las categorías desde el archivo JSON */
 
-fetch("public/data/filters.json")
+fetch("/data/filters.json")
   .then((response) => response.json())
   .then((filters) => {
     /*Cambiar el texto de los botones de filtro aleatoriamente */
