@@ -11,8 +11,8 @@ Asyncterest es una galería de fotos interactiva construida con JavaScript y la 
 - **Interactividad**: La interfaz responde a las acciones del usuario, como la búsqueda y la selección de filtros.
 - **Diseño Responsive**: Adaptado a dispositivos móviles, tabletas y escritorios.
 
-  <img src="public/Mockups/iPhone-13-PRO-localhost.png" alt="Logo" width="200"/>
-   <img src="public/Mockups/Macbook-Air-localhost.png" alt="Logo" width="550"/>
+  <img src="public/Mockups/iPhone-13-PRO-localhost.png" alt="Logo" width="150"/>
+   <img src="public/Mockups/Macbook-Air-localhost.png" alt="Logo" width="600"/>
 
 ## Tecnologías Utilizadas
 
