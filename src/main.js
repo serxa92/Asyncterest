@@ -159,7 +159,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  /* Se pone un timeout para que el scroll se mantenga al principio. */
+  // Se pone un timeout para que el scroll se mantenga al principio. 
   setTimeout(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, 100);
