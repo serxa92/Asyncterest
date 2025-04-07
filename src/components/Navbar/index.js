@@ -9,10 +9,10 @@ export function Navbar() {
         <button id="search_btn">Search</button>
       </div>
       <div class="category-filters">
-        <button class="filter-btn" data-category="offices">🏢 Oficinas</button>
-        <button class="filter-btn" data-category="plants">🪴 Plantas</button>
-        <button class="filter-btn" data-category="workspace">💻 Espacios de trabajo</button>
-        <button class="filter-btn" data-category="minimalist desk">✨ Minimalismo</button>
+        <button class="filter-btn" data-category="offices"></button>
+        <button class="filter-btn" data-category="plants"></button>
+        <button class="filter-btn" data-category="workspace"></button>
+        <button class="filter-btn" data-category="minimalist desk"></button>
       </div>
     </header>
     <main>
@@ -21,21 +21,55 @@ export function Navbar() {
   `;
 }
 
-/* Cargar las categorías desde el archivo JSON */
+//Declaro la función loadFilters que se encarga de cargar los filtros en el navbar.
 
-fetch("/data/filters.json")
-  .then((response) => response.json())
-  .then((filters) => {
-    /*Cambiar el texto de los botones de filtro aleatoriamente */
-
-    const filterButtons = document.querySelectorAll(".filter-btn");
-    filterButtons.forEach((btn) => {
-      const category = btn.dataset.category;
-      const randomText =
-        filters[category][Math.floor(Math.random() * filters[category].length)];
-      btn.textContent = randomText;
-    });
-  })
-  .catch((error) => {
-    console.error("Error loading filters:", error);
-  });
+export const filters = {
+  offices: [
+    "Offices",
+    "Modern Offices",
+    "Creative Workspaces",
+    "Home Offices",
+    "Corporate Design",
+    "Minimalist Offices",
+    "Luxury Offices",
+    "Tech Offices",
+    "Cozy Offices",
+    "Small Offices",
+  ],
+  plants: [
+    "Plants",
+    "Indoor Plants",
+    "Office Plants",
+    "Home Plants",
+    "Succulents",
+    "Tropical Plants",
+    "Low Maintenance Plants",
+    "Air Purifying Plants",
+    "Decorative Plants",
+    "Garden Plants",
+  ],
+  workspace: [
+    "Workspaces",
+    "Home Workspaces",
+    "Creative Workspaces",
+    "Open Plan Offices",
+    "Cozy Workspaces",
+    "Collaborative Spaces",
+    "Desk Ideas",
+    "Productivity Workspaces",
+    "Ergonomic Workspaces",
+    "Office Organization",
+  ],
+  "minimalist desk": [
+    "Minimalist Desk",
+    "Simple Desk Designs",
+    "Decluttered Desks",
+    "Functional Desk Layouts",
+    "Neat Desk Ideas",
+    "Clean Workspace",
+    "Compact Desk Designs",
+    "Stylish Minimalist Offices",
+    "Sleek Desk Styles",
+    "Orderly Workspaces",
+  ],
+};

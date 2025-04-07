@@ -102,6 +102,7 @@
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s ease;
+ 
 }
 
 .filter-btn:hover {
@@ -152,14 +153,22 @@
     margin-left: 0;
     margin-bottom: 60px;
   }
+  
+  
 }
 
 @media (max-width: 560px) {
   .filter-btn {
-    display: none;
+   display:flex;
+    flex-direction: row
   }
   .input-wrapper input {
     width: 60vw;
     padding-left: 1rem;
   }
+ 
+  .category-filters .filter-btn:nth-child(n+3) {
+    display: none; 
+  }
+  
 }

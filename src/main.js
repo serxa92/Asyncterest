@@ -1,12 +1,10 @@
 import "./style.css";
 import { Navbar } from "./components/Navbar";
 import { Sidebar } from "./components/Sidebar";
+import { filters } from "./components/Navbar";
+const ACCESS_KEY = import.meta.env.VITE_ACCESS_KEY;
 
-const ACCESS_KEY = "6bksTNgYqRgXl8lCkO0q8j9JO93uxMXKAkfkHp4UQKM";
-
-/* Se importa el archivo de estilos y los componentes Navbar y Sidebar. 
-Se utiliza el método getElementById para obtener el elemento del DOM con el id "app" y se le asigna el contenido del layout principal (sidebar y navbar). */
-
+// Declaro el contenedor principal, donde se va a renderizar el sidebar y el navbar
 const app = document.getElementById("app");
 app.innerHTML = `
   ${Sidebar()}
@@ -14,18 +12,17 @@ app.innerHTML = `
     ${Navbar()}
   </div>
 `;
-
-
-const photo_input = document.querySelector("#photo_input"); // Input para búsqueda de fotos
-const search_btn = document.querySelector("#search_btn"); // Botón de búsqueda
-
-/* Se definen las variables currentPage y currentKeyword para controlar la página actual y la palabra clave de búsqueda. También se declara isLoading para evitar múltiples peticiones simultáneas. */
-
+const photo_input = document.querySelector("#photo_input");
+const search_btn = document.querySelector("#search_btn");
+/* 
+ Declaro currentPage y currentKeyword para poder hacer la paginación y la búsqueda, y isLoading para evitar que se hagan múltiples peticiones a la API al mismo tiempo 
+ */
 let currentPage = 1;
-let currentKeyword = "Offices"; // Palabra clave inicial (puedes cambiarla según el filtro)
+let currentKeyword = "Office decor";
 let isLoading = false;
-
-/* Función para obtener las fotos de la API */
+/* 
+Declaro la función getPhotos que se encarga de hacer la petición a la API de Unsplash y obtener las fotos
+La función recibe como parámetros el keyword y la página, y si no se pasan, se usan los valores por defecto */
 const getPhotos = async (keyword = currentKeyword, page = currentPage) => {
   isLoading = true;
   const res = await fetch(
@@ -36,7 +33,8 @@ const getPhotos = async (keyword = currentKeyword, page = currentPage) => {
   isLoading = false;
 };
 
-/* Función que transforma los datos de la API en objetos más manejables */
+/*  Declaro la función mapPhotos que se encarga de mapear las fotos obtenidas de la API y pasarlas a la función printPhotos
+ */
 const mapPhotos = (photos, replace = false) => {
   const mappedPhotos = photos.map((photo) => ({
     alt: photo.alt_description,
@@ -47,7 +45,13 @@ const mapPhotos = (photos, replace = false) => {
   printPhotos(mappedPhotos, replace);
 };
 
-/* Función que imprime las fotos en el DOM */
+/* Declaro la función printPhotos,que se encarga de renderizar las fotos en el contenedor principal.
+ La función recibe como parámetros las fotos y si se deben reemplazar o no.
+ Si se deben reemplazar, se limpia el contenedor antes de agregar las nuevas fotos,
+ si no se deben reemplazar, se agregan las nuevas fotos al final del contenedor.
+ Se usa un forOf para recorrer las fotos y se crea un elemento li por cada foto.
+ Se le agrega la clase fade-in para que se vea el efecto de carga
+ */
 const printPhotos = (photos, replace = false) => {
   const container = document.querySelector("#photo_container");
   if (replace) container.innerHTML = "";
@@ -62,8 +66,40 @@ const printPhotos = (photos, replace = false) => {
     container.appendChild(li);
   }
 };
+/*
+Declaro la función loadFilters que se encarga de cargar los filtros en el navbar.
+Se usa Math.random para obtener un índice aleatorio de la lista de filtros y se le asigna el texto al botón.
+Se usa el dataset para guardar el texto en el botón y poder usarlo después al hacer click en el botón.
+*/
+async function loadFilters() {
+  try {
+    const filterButtons = document.querySelectorAll(".filter-btn");
 
-/* Se agrega un evento al botón de búsqueda para que al hacer click se obtengan las fotos con la palabra clave ingresada en el input. */
+    filterButtons.forEach((btn) => {
+      const category = btn.dataset.category;
+      const randomText =
+        filters[category][Math.floor(Math.random() * filters[category].length)];
+      btn.textContent = randomText;
+      btn.dataset.search = randomText;
+    });
+  } catch (error) {
+    console.error("Error loading filters:", error);
+  }
+}
+
+loadFilters();
+
+// Evento de click en los botones de filtro
+document.querySelectorAll(".filter-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const searchTerm = btn.dataset.search;
+    currentKeyword = searchTerm;
+    currentPage = 1;
+    getPhotos(currentKeyword, currentPage);
+  });
+});
+
+// Evento de búsqueda al hacer click en el botón de búsqueda
 search_btn.addEventListener("click", () => {
   const keyword = photo_input.value.trim();
   if (keyword) {
@@ -73,7 +109,7 @@ search_btn.addEventListener("click", () => {
   }
 });
 
-/* Se agrega un evento al input de búsqueda para que al presionar la tecla Enter se obtengan las fotos con la palabra clave ingresada. */
+// Evento de búsqueda con la tecla Enter
 photo_input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     const keyword = photo_input.value.trim();
@@ -85,7 +121,7 @@ photo_input.addEventListener("keydown", (e) => {
   }
 });
 
-/* Se agrega un evento al objeto window para que al hacer scroll se verifique si el usuario ha llegado cerca del final de la página. Si es así, se incrementa la variable currentPage y se llama a la función getPhotos con la palabra clave actual y la nueva página. */
+// Evento de scroll para cargar más fotos
 window.addEventListener("scroll", () => {
   const scrollY = window.scrollY;
   const viewportHeight = window.innerHeight;
@@ -97,28 +133,26 @@ window.addEventListener("scroll", () => {
   }
 });
 
-/* Carga las fotos al cargar la página, se llama a la función getPhotos con la palabra clave y la página actual. */
+/* Este evento se encarga de evitar que el scroll se mantenga en la parte superior al cargar la página.
+Se usa el evento DOMContentLoaded para asegurarse de que el DOM esté completamente cargado antes de ejecutar la función.
+Se usa history.scrollRestoration = "manual" para evitar que el scroll se mantenga en la parte superior al cargar la página.
+Se usa un setTimeout para que el scroll se mantenga al principio. */
+
 window.addEventListener("DOMContentLoaded", async () => {
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
   }
   currentPage = 1;
   await getPhotos(currentKeyword, currentPage);
-  // Aplicar el filtro cuando se haga clic en los botones de filtro
   document.addEventListener("click", async (e) => {
     const filterBtn = e.target.closest(".filter-btn");
     if (filterBtn) {
-      const category = filterBtn.dataset.category;
+      currentKeyword = filterBtn.dataset.search;
+      currentPage = 1;
 
-      // Actualizar la palabra clave y restablecer la página al primer resultado
-      currentKeyword = category; // Actualizar la palabra clave
-      currentPage = 1; // Restablecer la página
-
-      // Obtener las fotos con el filtro seleccionado
       console.log(currentKeyword);
-    await getPhotos(currentKeyword, currentPage);
+      await getPhotos(currentKeyword, currentPage);
 
-      // Añadir la clase activa al botón seleccionado
       const allBtns = document.querySelectorAll(".filter-btn");
       allBtns.forEach((btn) => btn.classList.remove("active-filter"));
       filterBtn.classList.add("active-filter");
